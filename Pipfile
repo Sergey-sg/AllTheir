@@ -6,6 +6,11 @@ name = "pypi"
 [packages]
 django = "*"
 django-debug-toolbar = "*"
+pillow = "*"
+django-ckeditor = "*"
+django-environ = "*"
+python-slugify = "*"
+django-utils-six = "*"
 
 [dev-packages]
 

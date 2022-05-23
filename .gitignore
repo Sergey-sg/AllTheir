@@ -12,6 +12,6 @@ db.sqlite3-journal
 /media
 /static
 .idea
-.env
+AllTheir/.env
 /sent_emails
 static/
