@@ -11,6 +11,9 @@ django-ckeditor = "*"
 django-environ = "*"
 python-slugify = "*"
 django-utils-six = "*"
+jinja2 = "*"
+django-jinja = "*"
+django-admin-sortable2 = "*"
 
 [dev-packages]
 

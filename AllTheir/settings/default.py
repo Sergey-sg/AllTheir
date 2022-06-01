@@ -13,6 +13,9 @@ import os
 from pathlib import Path
 
 import environ
+import jinja2
+from django_jinja.builtins import DEFAULT_EXTENSIONS
+from django.urls import reverse_lazy
 
 env = environ.Env(
   # set casting, default value
@@ -40,19 +43,23 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django_jinja',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     # installed
     'debug_toolbar',
     'ckeditor',
+    'adminsortable2',
     # created apps
     'apps.accounts',
     'apps.news',
     'shared',
+    'apps.menu'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +76,46 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'AllTheir.urls'
 
 TEMPLATES = [
+    {
+        'BACKEND': 'django_jinja.backend.Jinja2',
+        'NAME': 'jinja2',
+        'APP_DIRS': True,
+        'DIRS': ['markup/templates/'],
+        'OPTIONS': {
+           'environment': 'shared.env.jinja2.environment',
+           'match_extension': '.jinja2',
+           'newstyle_gettext': True,
+           'auto_reload': True,
+           'undefined': jinja2.Undefined,
+           'debug': True,
+
+           'filters': {},
+
+           # "globals": {
+           #      'available_languages': 'shared.templatetags.language.get_lang_urls',
+           # },
+
+           'context_processors': [
+              'django.contrib.auth.context_processors.auth',
+              'django.template.context_processors.debug',
+              'django.template.context_processors.i18n',
+              'django.template.context_processors.media',
+              'django.template.context_processors.static',
+              'django.template.context_processors.tz',
+              'django.contrib.messages.context_processors.messages',
+              # context processor for menu items.
+              # 'apps.menu.context_processors.access_menu_items',
+           ],
+
+           'extensions': DEFAULT_EXTENSIONS,
+
+           "bytecode_cache": {
+              "name": "default",
+              "backend": "django_jinja.cache.BytecodeCache",
+              "enabled": True,
+           },
+        },
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'markup/templates']
@@ -151,3 +198,9 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'personal-area'
+
+SITE_ID = 1

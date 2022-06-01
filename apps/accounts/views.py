@@ -8,12 +8,13 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
 
-from django.views.generic import UpdateView, CreateView, TemplateView, FormView
+from django.views.generic import UpdateView, CreateView, TemplateView, FormView, ListView
 from django.contrib.auth import get_user_model
 
 from shared.mixins.views_mixins import send_activate_message
-from .forms import CustomUserChangeForm, CustomUserLoginForm, CustomRegistrationForm
+from .forms import CustomUserChangeForm, CustomUserLoginForm, CustomRegistrationForm, UserProfileChangeForm
 from .tokens import account_activation_token
+from ..news.models import News
 
 
 class UserChangeView(LoginRequiredMixin, UpdateView):
@@ -52,6 +53,7 @@ class MyPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 class CustomLoginView(LoginView):
     """Login view with form for create new user"""
     template_name = 'registration/login.jinja2'
+
 
     def get_context_data(self, *args, **kwargs) -> dict:
         """return form for login and create new user"""
@@ -101,20 +103,18 @@ class ConfirmRegistrationView(TemplateView):
     template_name = 'registration/confirm_email_message_done.jinja2'
 
 
-# class PersonalArea(LoginRequiredMixin, ListView):
-#     """
-#     Personal area for current user
-#     """
-#     template_name = 'registration/profile.jinja2'
-#     paginate_by = 8
-#
-#     def get_queryset(self) -> QuerySet[Article]:
-#         articles = Article.objects.filter(author=self.request.user).only(
-#             'slug', 'title', 'short_description', 'average_rating')
-#         return articles
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super(PersonalArea, self).get_context_data(**kwargs)
-#         context['user_profile_form'] = UserProfileChangeForm(instance=self.request.user)
-#         context['password_change_form'] = PasswordChangeForm(user=self.request.user)
-#         return context
+class PersonalArea(LoginRequiredMixin, ListView):
+    """
+    Personal area for current user
+    """
+    template_name = 'registration/profile.jinja2'
+
+    def get_queryset(self):
+        news = News.objects.all()[:7]
+        return news
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super(PersonalArea, self).get_context_data(**kwargs)
+    #     context['user_profile_form'] = UserProfileChangeForm(instance=self.request.user)
+    #     context['password_change_form'] = PasswordChangeForm(user=self.request.user)
+    #     return context
