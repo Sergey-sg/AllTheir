@@ -50,7 +50,7 @@ class Menu(DragDropMixins):
     class Meta:
         verbose_name = _('Menu item')
         verbose_name_plural = _('Menu items')
-        ordering = ['dd_order', 'created']
+        ordering = ['dd_order']
 
     def __str__(self) -> str:
         """class method returns the menu item in string representation"""

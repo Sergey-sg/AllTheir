@@ -44,6 +44,7 @@ INTERNAL_IPS = [
 
 INSTALLED_APPS = [
     'django_jinja',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -104,7 +105,7 @@ TEMPLATES = [
               'django.template.context_processors.tz',
               'django.contrib.messages.context_processors.messages',
               # context processor for menu items.
-              # 'apps.menu.context_processors.access_menu_items',
+              'apps.menu.context_processors.access_menu_items',
            ],
 
            'extensions': DEFAULT_EXTENSIONS,
@@ -168,7 +169,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+gettext = lambda s: s
+
+LANGUAGES = (
+    ('en', gettext('English')),
+    ('ru', gettext('Russian')),
+    ('uk', gettext('Ukrainian')),
+)
 
 TIME_ZONE = 'Europe/Zaporozhye'
 

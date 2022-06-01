@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 django = "*"
-django-debug-toolbar = "*"
 pillow = "*"
 django-ckeditor = "*"
 django-environ = "*"
@@ -13,9 +12,11 @@ python-slugify = "*"
 django-utils-six = "*"
 jinja2 = "*"
 django-jinja = "*"
-django-admin-sortable2 = "*"
+django-modeltranslation = "*"
+django-admin-sortable2 = "==1.0.4"
 
 [dev-packages]
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"
