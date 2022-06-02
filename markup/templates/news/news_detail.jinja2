@@ -1,0 +1,185 @@
+{% extends 'base.jinja2' %}
+
+{% block title %}{{ news.headline }}{% endblock title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row mx-auto">
+            <div class="col-lg-9 offset-1">
+                <h4 class="text-center">{{ news.headline }}</h4>
+                <br>
+                <div class="text-center">
+                        <img class="col col-lg-3 img-thumbnail" src="{{ news.preview_image.url }}" alt="{{ news.img_alt }}">
+                </div>
+{#                <p>{{_('Category')}}: <a href="{{ url('home') }}?filter_category={{ article.category.pk }}">{{ article.category.name }}</a></p>#}
+                <p>{{_('rating')}}: {{ news.rating }} ({{_('number of ratings')}}: {{ news.likes }})</p>
+            <!-- добавление в избранное -->
+{#                {% if request.user.is_authenticated and request.user.is_active  %}#}
+{#                    {% set favorite = in_favorite(request=request, article=article) %}#}
+{#                    <div class="container" style="padding-bottom: 30px">#}
+{#                        <form action="{% if favorite %}{{ url('favorite_delete', article.slug) }}{% else %}{{ url('favorite_add', article.slug) }}{% endif %}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            <button type="submit" class="btn btn-outline-primary">#}
+{#                                {% if not favorite %}#}
+{#                                    {{_('добавить в избранное')}}#}
+{#                                    <span class="material-icons text-danger">#}
+{#                                        favorite_border#}
+{#                                    </span>#}
+{#                                {% else %}#}
+{#                                    {{_('удалить из избранного')}}#}
+{#                                    <span class="material-icons text-danger">#}
+{#                                        favorite#}
+{#                                    </span>#}
+{#                                {% endif %}#}
+{#                            </button>#}
+{#                        </form>#}
+{#                    </div>#}
+{#                {% endif %}#}
+                <br>
+                {{ news.content|safe }}
+                <br>
+                <p>{{_('News author')}}: <a href="?filter_author={{ news.author.pk }}">{% if news.author.first_name %}{{ news.author.get_full_name() }}{% else %}{{ news.author.email }}{% endif %}</a></p>
+                <p>{{_('Date the news was last modified')}}: {{ news.updated }}</p>
+                {% if request.user.is_authenticated and request.user.is_active  %}
+            <!-- добавление оценки -->
+{#                    {% set author_score = in_scores(request=request, article=article) %}#}
+{#                    <div class="container" style="padding-bottom: 30px">#}
+{#                        <form action="{% if author_score %}{{ url('update_score', article.slug) }}{% else %}{{ url('add_score', article.slug) }}{% endif %}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            <table>#}
+{#                                {{ score.as_p() }}#}
+{#                            </table>#}
+{#                            <input class="btn btn-primary text-black" type="submit" value="{{_('оценить')}}">#}
+{#                        </form>#}
+{#                    </div>#}
+            <!-- добавление подписки -->
+{#                    <div class="row">#}
+{#                        {% set subscription = in_subscription(request=request, author=article.author) %}#}
+{#                        <div class="container" style="padding-bottom: 30px">#}
+{#                            <form action="{% if subscription %}{{ url('subscription_delete', article.author.pk) }}{% else %}{{ url('subscription_add', article.author.pk) }}{% endif %}" method="post">#}
+{#                                {% csrf_token %}#}
+{#                                <button type="submit" class="btn btn-outline-primary">#}
+{#                                    {% if not subscription %}#}
+{#                                        <div class="text-center">#}
+{#                                            {{_('подписаться на автора')}}#}
+{#                                            <span class="material-icons text-muted">#}
+{#                                                mark_email_read#}
+{#                                            </span>#}
+{#                                        </div>#}
+{#                                    {% else %}#}
+{#                                        {{_('отписаться от автора')}}#}
+{#                                        <span class="material-icons text-danger">#}
+{#                                            mark_email_read#}
+{#                                        </span>#}
+{#                                    {% endif %}#}
+{#                                </button>#}
+{#                            </form>#}
+{#                        </div>#}
+{#                    </div>#}
+                {% else %}
+                    <p>{{_('To be able to rate and comment on an article, you must log in and your account must be verified')}}</p>
+                <!-- кнопка вызова модального окна регистрации -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        {{_('log in')}}
+                    </button>
+                    <br>
+                    <br>
+
+                <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{_('Authorization')}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <form method="post" action="{{ url('login') }}">
+                                {% csrf_token %}
+                                <table>
+                                    <tr>
+                                        <td>{{ login.as_p() }}</td>
+                                    </tr>
+                                </table>
+                                <div class="modal-footer">
+                                    <input type="submit" class="btn btn-primary" value="{{_('sign in')}}" />
+                                    <input type="hidden" name="next" value="{{ url('news_detail', news.slug) }}" />
+                                    <p><a href="{{ url('password_reset') }}">{{_('forgot your password')}}?</a></p>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {% endif %}
+                <hr>
+            <!-- добавление комментария -->
+{#                {% if request.user.is_authenticated and request.user.is_active  %}#}
+{#                    <h3>{{_('Комментарии')}}: </h3>#}
+{#                    <div class="container" style="padding-bottom: 30px">#}
+{#                        <form action="{{ url('comment_add', article.slug) }}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            <table>#}
+{#                                <tr>{{_('Оставьте свой отзыв')}}:<br>{{ new_comment.message }}</tr>#}
+{#                                 {{ new_comment.media }}#}
+{#                            </table>#}
+{#                            <input class="btn btn-primary text-black" type="submit" value="{{_('комментировать')}}">#}
+{#                        </form>#}
+{#                    </div>#}
+{#                {% endif %}#}
+            <!-- комментарии статьи -->
+{#                <div class="row">#}
+    {#                  {% for comment in article.commentarticle_set.all %}#}
+{#                      {% for comment in object_list %}#}
+{#                        <div class="media border p-3" style="margin-bottom: 15px">#}
+{#                            <div class="media-body">#}
+{#                                <p>#}
+{#                                    <i class="text-muted">#}
+{#                                        <small>{{_('автор')}}: {% if comment.author.first_name %}{{ comment.author.get_full_name() }}{% else %}{{ comment.author.email }}{% endif %}#}
+{#                                               {{_('дата комментария')}} {{ comment.created }}{% if comment.score %} {{_('оценка')}}: {{ comment.score.score }}{% endif %}#}
+{#                                        </small>#}
+{#                                    </i>#}
+{#                                </p>#}
+{#                                <p>{{ comment.message|safe }}</p>#}
+{#                                {% if comment.author == request.user %}#}
+{#                                    <div class="row">#}
+{#                                        <a href="{{ url('comment_change', article.slug, comment.pk) }}">#}
+{#                                            <button class="btn btn-primary text-black" type="button">#}
+{#                                                {{_('изменить комментарий')}}#}
+{#                                            </button>#}
+{#                                        </a>#}
+{#                                        <form action="{{ url('comment_delete', article.slug, comment.pk) }}" method="post">#}
+{#                                            {% csrf_token %}#}
+{#                                            <input style="float: right" class="btn btn-danger text-black" type="submit" value="{{_('удалить комментарий')}}">#}
+{#                                        </form>#}
+{#                                    </div>#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+            </div>
+        <!-- рекомендованные статьи -->
+            <div class="col-sm-5 col-lg-2 ms-lg-auto">
+                {{_('Featured Articles')}}:
+                <br>
+{#                {% for recommended in article.recommended.all() %}#}
+{#                    <div class="container p-3 border">#}
+{#                        <h4><a href="{{ url('article_detail', recommended.slug) }}">{{ recommended.title }}</a></h4>#}
+{#                        <img src="{{ recommended.article_preview.url }}" alt="{{ recommended.img_alt }}" width="100%">#}
+{#                        <div>{{ recommended.short_description }}</div>#}
+{#                        <div>{{ _('автор') }}: <a href="{{ url('home') }}?filter_author={{ recommended.author.pk }}">{% if recommended.author.first_name %}{{ recommended.author.get_full_name() }}{% else %}{{ recommended.author.email }}{% endif %}</a></div>#}
+{#                        <div>{{_('последнее обновление статьи')}}: {{ recommended.updated }}</div>#}
+{#                        <div>{{_('рейтинг')}}: {{ recommended.average_rating }}</div>#}
+{#                        <a href="{{ url('article_detail', recommended.slug) }}">#}
+{#                            <button type="button" class="btn btn-primary text-black">#}
+{#                                {{_('Подробнее')}}#}
+{#                            </button>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                        <br>#}
+{#                {% endfor %}#}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

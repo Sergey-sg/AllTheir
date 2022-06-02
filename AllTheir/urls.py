@@ -20,7 +20,8 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.accounts.urls'))
+    path('', include('apps.accounts.urls')),
+    path('news/', include('apps.news.urls')),
 ]
 
 if 'rosetta' in settings.INSTALLED_APPS:

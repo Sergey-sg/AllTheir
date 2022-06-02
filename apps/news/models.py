@@ -49,6 +49,22 @@ class Category(CurrentSlugMixin, CreatedUpdateMixins):
 
 
 class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
+    """
+    News model
+        attributes:
+             headline (str): news headline
+             slug (str): used to generate URL
+             created (datetime): date of created item
+             updated (datetime): date of last update item
+             content (str): the content of the news
+             preview_image (img): news preview image
+             img_alt (str): text to be loaded in case of image loss
+             author (class User): author of news
+             category(class Category): category of news
+             rating (float): average news rating
+             likes (int): number of news ratings
+             views (int): number of news views
+    """
     headline = models.CharField(
         max_length=100,
         unique=True,
@@ -63,12 +79,12 @@ class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
     )
     content = RichTextField(
         verbose_name=_('content'),
-        help_text=_('the content of the article')
+        help_text=_('the content of the news')
     )
     preview_image = models.ImageField(
         upload_to='news_preview_images/%Y/%m/%d',
-        verbose_name=_('article preview'),
-        help_text="article preview image"
+        verbose_name=_('news preview'),
+        help_text="news preview image"
     )
     img_alt = models.CharField(
         max_length=100,
@@ -88,7 +104,7 @@ class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name=_('category'),
-        help_text=_('category of article')
+        help_text=_('category of news')
     )
     rating = models.DecimalField(
         max_digits=2,
