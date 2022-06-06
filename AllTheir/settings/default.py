@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'ckeditor',
     'adminsortable2',
+    'crispy_forms',
     # created apps
     'apps.accounts',
     'apps.news',
@@ -213,3 +214,5 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'personal-area'
 
 SITE_ID = 1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

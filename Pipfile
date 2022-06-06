@@ -10,10 +10,11 @@ django-ckeditor = "*"
 django-environ = "*"
 python-slugify = "*"
 django-utils-six = "*"
-jinja2 = "*"
 django-jinja = "*"
 django-modeltranslation = "*"
 django-admin-sortable2 = "==1.0.4"
+jinja2 = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"

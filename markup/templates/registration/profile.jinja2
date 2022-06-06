@@ -7,21 +7,21 @@
         <div>
             {% for object in object_list %}
                 <div class="container p-3 border">
-                    <p><a href=>{{ object.headline }}</a></p>
+                    <p><a href="{{ url('news_detail', object.slug) }}">{{ object.headline }}</a></p>
                     <p>{{ object.content[:200]|safe }} ...
-    {#                    <a href="{{ url('news_detail', object.slug) }}">{{ _('click to see more') }}</a>#}
+                        <a href="{{ url('news_detail', object.slug) }}">{{ _('click to see more') }}</a>
                     </p>
                 </div>
             {% endfor %}
         </div>
         <!-- кнопка перехода для создания новости -->
-{#            <a href="{{ url('news_create') }}">#}
-{#                <button class="btn btn-primary text-black" type="button">#}
-{#                    {{_('new news')}}#}
-{#                </button>#}
-{#            </a>#}
-{#            <br>#}
-{#            <br>#}
+            <a href="{{ url('news_create') }}">
+                <button class="btn btn-primary text-black" type="button">
+                    {{_('new news')}}
+                </button>
+            </a>
+            <br>
+            <br>
 {#        <!-- статьи пользователя -->#}
 {#            <div class="container p-3 border">#}
 {#                <h6>{{_('Мои статьи')}}</h6>#}
