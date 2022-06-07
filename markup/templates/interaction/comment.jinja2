@@ -1,0 +1,17 @@
+{% extends 'base.jinja2' %}
+
+{% block title %}{{ _('Editing a comment') }}{% endblock title %}
+
+{% block content %}
+    <div class="container" style="padding-bottom: 30px">
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                <tr>{{_('Change your review')}}:
+                <br>{{ form.media }}
+                {{ crispy(form) }}
+            </table>
+            <input class="btn btn-primary text-black" type="submit" value="{{_('edit comment')}}">
+        </form>
+    </div>
+{% endblock content %}

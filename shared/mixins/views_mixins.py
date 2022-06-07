@@ -10,34 +10,6 @@ from slugify import slugify
 from apps.accounts.tokens import account_activation_token
 
 
-class ScoreCommentMixin:
-    @staticmethod
-    def get_score_for_comment(author, article, model):
-        """return list [True, Score] or [False]"""
-        try:
-            score = model.objects.get(author=author, article=article)
-            if score:
-                return [True, score]
-        except Exception:
-            return [False]
-        else:
-            return [False]
-
-
-class CommentScoreMixin:
-    @staticmethod
-    def get_comments_for_score(author, article, model):
-        """return list [True, CommentArticle] or [False]"""
-        try:
-            comments = model.objects.filter(author=author, article=article)
-            if comments:
-                return [True, comments]
-        except Exception:
-            return [False]
-        else:
-            return [False]
-
-
 # class SendSubscriptionMixin:
 #
 #     @staticmethod

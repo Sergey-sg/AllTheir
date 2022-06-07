@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.news',
     'shared',
-    'apps.menu'
+    'apps.menu',
+    'apps.interaction',
 ]
 
 MIDDLEWARE = [

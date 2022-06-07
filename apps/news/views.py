@@ -2,11 +2,13 @@ from typing import Any, Union
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
-from django.views.generic import DetailView, CreateView
+from django.views.generic import DetailView, CreateView, UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
+from apps.interaction.forms import ScoreForm, CommentForm
+from apps.interaction.models import Comment
 from apps.news.forms import NewsForm
 from apps.news.models import News
 
@@ -15,11 +17,6 @@ class NewsCreateView(LoginRequiredMixin, CreateView):
     model = News
     template_name = 'news/news_create.jinja2'
     form_class = NewsForm
-
-    # def get(self, *args: Any, **kwargs: dict) -> TemplateResponse:
-    #     """send context to response"""
-    #     self.object = None
-    #     return self.render_to_response(self.get_context_data(imagearticle_form=imagearticle_form))
 
     def post(self, request, *args: Any, **kwargs: dict) -> Union[HttpResponseRedirect, TemplateResponse]:
         """checks valid of filling out the class form"""
@@ -42,18 +39,36 @@ class NewsCreateView(LoginRequiredMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class NewsDetailView(LoginRequiredMixin, DetailView):
+class NewsUpdate(LoginRequiredMixin, UpdateView):
+    """
+    Displays a form for editing information about news.
+    """
+    form_class = NewsForm
+    template_name = 'news/news_update.jinja2'
+
+    def get_object(self, queryset=None) -> News:
+        """get object of News if user is the author"""
+        return get_object_or_404(News, author=self.request.user, slug=self.kwargs['slug'])
+
+    def form_valid(self, form, *args) -> HttpResponseRedirect:
+        """save class form"""
+        obj_form = form.save()
+        return redirect('news_detail', obj_form.slug)
+
+
+class NewsDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     """
     Generates a detail of news with
     """
     model = News
     template_name = "news/news_detail.jinja2"
+    paginate_by = 8
+    object_list = None
 
-    # def get_context_data(self, **kwargs: dict) -> dict:
-    #     """Add to context ScoreForm, CommentArticleForm and AuthenticationForm and create object_list of comments"""
-    #     self.object_list = Comment.objects.filter(news__slug=self.kwargs['slug'])
-    #     context = super().get_context_data(**kwargs)
-    #     context['score'] = ScoreForm()
-    #     context['new_comment'] = CommentArticleForm()
-    #     context['login'] = AuthenticationForm()
-    #     return context
+    def get_context_data(self, **kwargs: dict) -> dict:
+        """Add to context ScoreForm, CommentArticleForm and AuthenticationForm and create object_list of comments"""
+        self.object_list = Comment.objects.filter(news__slug=self.kwargs['slug'])
+        context = super().get_context_data(**kwargs)
+        context['score'] = ScoreForm()
+        context['new_comment'] = CommentForm()
+        return context
