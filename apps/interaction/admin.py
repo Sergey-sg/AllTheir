@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from ..interaction.models import Comment, Score, LikeNews
+from ..interaction.models import Comment, Score, LikeNews, ViewingNews
 
 
 @admin.register(Comment)
@@ -21,4 +21,11 @@ class ScoreAdmin(admin.ModelAdmin):
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('news', 'subscriber', 'created',)
     list_filter = ['news', 'subscriber']
+    search_fields = ['news']
+
+
+@admin.register(ViewingNews)
+class ViewingNewsAdmin(admin.ModelAdmin):
+    list_display = ('news', 'user', 'created',)
+    list_filter = ['news', 'user']
     search_fields = ['news']

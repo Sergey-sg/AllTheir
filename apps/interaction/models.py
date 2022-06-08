@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 from ckeditor.fields import RichTextField
 from django.core.validators import MinLengthValidator
@@ -157,3 +159,10 @@ class ViewingNews(CreatedUpdateMixins):
     def __str__(self) -> str:
         """class method returns the viewing of news in string representation"""
         return f'{self.news}--{self.user}'
+
+    def save(self, *args: Any, **kwargs: dict) -> None:
+        """saves the view and adds the view to the news"""
+        super(ViewingNews, self).save(*args, **kwargs)
+        news = self.news
+        news.views = ViewingNews.objects.filter(news=news).count()
+        news.save()

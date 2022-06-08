@@ -13,6 +13,7 @@
                 </div>
                 <p>{{_('Category')}}: {{ news.category.name }}</p>
                 <p>{{_('rating')}}: {{ news.rating }}</p>
+                <p>{{_('views')}}: {{ news.views }}</p>
             <!-- добавление в избранное -->
                 {% if request.user.is_authenticated and request.user.is_active  %}
                     {% set like = in_like(request=request, news=news) %}
