@@ -8,7 +8,7 @@ from django.views.generic import DetailView, CreateView, UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
 from apps.interaction.forms import ScoreForm, CommentForm
-from apps.interaction.models import Comment, ViewingNews
+from apps.interaction.models import Comment, ViewingNews, Score
 from apps.news.forms import NewsForm
 from apps.news.models import News
 
@@ -69,11 +69,16 @@ class NewsDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
         """Add to context ScoreForm, CommentForm and create object_list of comments"""
         self.object_list = Comment.objects.filter(news__slug=self.kwargs['slug'])
         context = super().get_context_data(**kwargs)
-        context['score'] = ScoreForm()
+        try:
+            score = Score.objects.get(news__slug=self.kwargs['slug'], author=self.request.user)
+        except Exception:
+            score = None
+        context['score'] = ScoreForm(instance=score)
         context['new_comment'] = CommentForm()
         return context
 
     def get(self, request, *args, **kwargs):
+        """If the user views the news for the first time, then a viewing news is created"""
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
         if request.user != self.object.author:

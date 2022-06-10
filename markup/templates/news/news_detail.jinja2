@@ -18,7 +18,7 @@
                 {% if request.user.is_authenticated and request.user.is_active  %}
                     {% set like = in_like(request=request, news=news) %}
                     <div class="container" style="padding-bottom: 30px">
-                        <form action="{% if like %}{{ url('like_delete', news.slug) }}{% else %}{{ url('like_add', news.slug) }}{% endif %}" method="post">
+                        <form action="{{ url('like_add_or_delete', news.slug) }}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-outline-primary">
                                 {% if not like %}

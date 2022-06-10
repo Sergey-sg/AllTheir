@@ -21,13 +21,3 @@ def in_like(request, news):
         return False
     if like:
         return True
-
-
-# @library.global_function
-# def in_subscription(request, author):
-#     try:
-#         subscription = request.user.subscription.all()
-#     except Exception:
-#         return False
-#     if author in subscription:
-#         return True

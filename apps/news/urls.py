@@ -1,7 +1,7 @@
 from django.urls import path, include
 
-from apps.interaction.views import AddScore, UpdateScore, LikeAdd, LikeDelete, CommentCreate, CommentUpdate, \
-    CommentDelete
+from apps.interaction.views import AddScore, UpdateScore, CommentCreate, CommentUpdate, \
+    CommentDelete, LikeAddDelete
 from apps.news.views import NewsDetailView, NewsCreateView, NewsUpdate
 
 urlpatterns = [
@@ -13,10 +13,7 @@ urlpatterns = [
             path('add/', AddScore.as_view(), name='add_score'),
             path('update/', UpdateScore.as_view(), name='update_score'),
         ])),
-        path('like/', include([
-            path('add/', LikeAdd.as_view(), name='like_add'),
-            path('delete/', LikeDelete.as_view(), name='like_delete'),
-        ])),
+        path('like/', LikeAddDelete.as_view(), name='like_add_or_delete'),
         path('comment/', include([
             path('add/', CommentCreate.as_view(), name='comment_add'),
             path('<int:pk>/', include([
