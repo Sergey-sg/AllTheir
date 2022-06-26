@@ -18,25 +18,12 @@ class NewsCreateView(LoginRequiredMixin, CreateView):
     template_name = 'news/news_create.jinja2'
     form_class = NewsForm
 
-    def post(self, request, *args: Any, **kwargs: dict) -> Union[HttpResponseRedirect, TemplateResponse]:
-        """checks valid of filling out the class form"""
-        self.object = None
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
     def form_valid(self, form: NewsForm, *args: Any) -> HttpResponseRedirect:
-        """save class form"""
+        """save class form and redirect to news detail"""
         object_form = form.save(commit=False)
         object_form.author = self.request.user
         object_form.save()
         return redirect('news_detail', object_form.slug)
-
-    def form_invalid(self, form: NewsForm, *args: Any) -> TemplateResponse:
-        """returns a form for correcting errors"""
-        return self.render_to_response(self.get_context_data(form=form))
 
 
 class NewsUpdate(LoginRequiredMixin, UpdateView):
@@ -51,7 +38,7 @@ class NewsUpdate(LoginRequiredMixin, UpdateView):
         return get_object_or_404(News, author=self.request.user, slug=self.kwargs['slug'])
 
     def form_valid(self, form, *args) -> HttpResponseRedirect:
-        """save class form"""
+        """save class form and redirect to news detail"""
         obj_form = form.save()
         return redirect('news_detail', obj_form.slug)
 
