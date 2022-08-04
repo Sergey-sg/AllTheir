@@ -35,4 +35,4 @@ class UserProfileChangeForm(forms.ModelForm):
 class PasswordProfileChange(PasswordChangeForm):
     class Meta:
         model = get_user_model()
-        fields = ('old_password', 'new_password1', 'nwe_password2')
+        fields = ('old_password', 'new_password1', 'new_password2')

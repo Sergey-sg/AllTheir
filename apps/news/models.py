@@ -10,7 +10,61 @@ from shared.mixins.model_utils import CreatedUpdateMixins, ImageNameMixins
 from shared.mixins.views_mixins import CurrentSlugMixin
 
 
+class Category(CurrentSlugMixin, CreatedUpdateMixins):
+    """
+    Category model
+        attributes:
+             name (str): category name
+             slug (str): used to generate URL
+             created (datetime): date of created item
+             updated (datetime): date of last update item
+    """
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        validators=[MinLengthValidator(3)],
+        verbose_name=_('name'),
+        help_text=_('category name')
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text=_('used to generate URL'),
+        null=True,
+        blank=True
+    )
+
+    class Meta(object):
+        verbose_name = _('category')
+        verbose_name_plural = _('Categories')
+        ordering = ['name']
+
+    def __str__(self) -> str:
+        """class method returns the category in string representation"""
+        return self.name
+
+    def save(self, *args: Any, **kwargs: dict) -> None:
+        """if the slug is not created then it is created from the name of the category"""
+        self.slug = self.get_current_slug(slug=self.slug, alt=self.name, model=Category, pk=self.pk)
+        super(Category, self).save(*args, **kwargs)
+
+
 class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
+    """
+    News model
+        attributes:
+             headline (str): news headline
+             slug (str): used to generate URL
+             created (datetime): date of created item
+             updated (datetime): date of last update item
+             content (str): the content of the news
+             preview_image (img): news preview image
+             img_alt (str): text to be loaded in case of image loss
+             author (class User): author of news
+             category(class Category): category of news
+             rating (float): average news rating
+             likes (int): number of news ratings
+             views (int): number of news views
+    """
     headline = models.CharField(
         max_length=100,
         unique=True,
@@ -25,12 +79,12 @@ class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
     )
     content = RichTextField(
         verbose_name=_('content'),
-        help_text=_('the content of the article')
+        help_text=_('the content of the news')
     )
     preview_image = models.ImageField(
         upload_to='news_preview_images/%Y/%m/%d',
-        verbose_name=_('article preview'),
-        help_text="article preview image"
+        verbose_name=_('news preview'),
+        help_text="news preview image"
     )
     img_alt = models.CharField(
         max_length=100,
@@ -45,13 +99,13 @@ class News(CreatedUpdateMixins, CurrentSlugMixin, ImageNameMixins):
         verbose_name=_('author'),
         help_text=_('author of news')
     )
-    # category = models.ForeignKey(
-    #     Category,
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     verbose_name=_('category'),
-    #     help_text=_('category of article')
-    # )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name=_('category'),
+        help_text=_('category of news')
+    )
     rating = models.DecimalField(
         max_digits=2,
         decimal_places=1,

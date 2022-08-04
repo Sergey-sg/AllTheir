@@ -26,7 +26,7 @@ class ImageNameMixins:
         return f'{name}-{datetime.now()}.{extension}'
 
     def get_current_image_name(self, model):
-        if self.pk is not None:    # if the article already exists then it is checked for a change in the preview image
+        if self.pk is not None:    # if the news already exists then it is checked for a change in the preview image
             orig = model.objects.get(pk=self.pk)
             if orig.preview_image.name != self.preview_image.name:
                 if self.preview_image:
@@ -44,9 +44,8 @@ class ImageNameMixins:
 
 class ScoreMixins:
     @staticmethod
-    def add_rating_to_article(article, score):
-        article.number_of_likes = score.count()
+    def add_rating_to_news(news, score):
+        news.number_of_likes = score.count()
         rating = score.aggregate(Avg('score'))['score__avg'] or 0
-        article.average_rating = rating
-        article.save()
-
+        news.rating = rating
+        news.save()
